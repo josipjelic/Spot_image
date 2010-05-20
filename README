@@ -1,0 +1,48 @@
+This is Kohana module for on-thy-fly image serving
+
+Description_
+------------
+This module creates on the fly images by searching for images in configured directories. It uses parameters from database, but can also serve images by parameters defined in URL (!!this is not fully supported yet!!). Also this module uses cache directory for caching of generated images and, if needed, later fetching. For cache directory there are certain rules wich limits it's freshness, size or number of files.
+
+Instalation_
+------------
+1. create spot_image folder in ylur modules folder
+2. add module in bootstrap.php
+3. edit route in init.php - first segment (defaults: repos) will be first segment in your URL for images
+4. edit config/spot_image.php - prefix should be the same as in init.php - this is needed only if you are going to use methods for generation of tags
+
+Usage_
+------
+in default setup images are served like this:
+http://www.example.com/repos/site_article/image.jpg
+or by parameter like this:
+http://www.example.com/repos/image.jpg/?width=200&crop_width=200&crop_height=150
+
+TO DO_
+------
+1. Adding support for image parameters in config file
+ .
+ .
+ .
+ 
+SQL Schema_
+-----------
+CREATE TABLE IF NOT EXISTS `_image_sizes` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `width` int(4) DEFAULT NULL,
+  `height` int(4) DEFAULT NULL,
+  `constraint` set('none','width','height','auto','inverse','minimal') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `crop_width` int(4) DEFAULT NULL,
+  `crop_height` int(4) DEFAULT NULL,
+  `crop_x` int(4) DEFAULT NULL,
+  `crop_y` int(4) DEFAULT NULL,
+  `rotate` int(3) DEFAULT '0',
+  `flip` set('horizontal','vertical') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sharpen` int(3) DEFAULT NULL,
+  `quality` int(3) DEFAULT '100',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-----------------------
+Columns in MySQL are actually parameters for Kohana_Image resize, crop, flip ... functions
